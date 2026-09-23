@@ -31,19 +31,23 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.igem2026.doctorapp.ui.steps.Step1OverviewScreen
-import com.igem2026.doctorapp.ui.steps.Step2ParameterScreen
+import com.igem2026.doctorapp.ui.steps.Step3InjectionScreen
 import com.igem2026.doctorapp.ui.steps.Step3TimingScreen
-import com.igem2026.doctorapp.ui.steps.Step4HardwareScreen
+import com.igem2026.doctorapp.ui.steps.Step4MagneticScreen
+import com.igem2026.doctorapp.ui.steps.Step5BlueLightScreen
+import com.igem2026.doctorapp.ui.steps.Step6ShutdownScreen
 
 enum class DoctorStep(val title: String, val subtitle: String) {
     OVERVIEW("1 · 总体说明书", "使用流程与安全须知"),
-    PARAMETER("2 · 混合调参", "相关力学参数（佳霖建模给出）"),
-    TIMING("3 · 混合计时", "可视化模拟（参考硬件示意图）"),
-    HARDWARE("4 · 注射与硬件", "连接镜头 · 磁场 · 蓝光 · 倒计时"),
+    TIMING("2 · 混合计时", "可视化模拟（参考硬件示意图）"),
+    INJECTION("3 · 注射", "连接镜头 · 注射 · 镜头画面 · 观察倒计时"),
+    MAGNETIC("4 · 打开磁场", "磁感线状态示意"),
+    BLUELIGHT("5 · 打开蓝光", "蓝光照射状态示意"),
+    SHUTDOWN("6 · 关闭磁场与蓝光", "一键关闭 · 收尾确认"),
 }
 
 @Composable
-fun WizardScreen() {
+fun WizardScreen(consumeStatusInsets: Boolean = true) {
     val steps = DoctorStep.entries
     var currentIndex by rememberSaveable { mutableIntStateOf(0) }
     val current = steps[currentIndex]
@@ -55,7 +59,7 @@ fun WizardScreen() {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .statusBarsPadding()
+                    .then(if (consumeStatusInsets) Modifier.statusBarsPadding() else Modifier)
                     .padding(horizontal = 20.dp, vertical = 12.dp),
             ) {
                 Text(
@@ -125,9 +129,11 @@ fun WizardScreen() {
         ) { index ->
             when (steps[index]) {
                 DoctorStep.OVERVIEW -> Step1OverviewScreen()
-                DoctorStep.PARAMETER -> Step2ParameterScreen()
                 DoctorStep.TIMING -> Step3TimingScreen()
-                DoctorStep.HARDWARE -> Step4HardwareScreen()
+                DoctorStep.INJECTION -> Step3InjectionScreen()
+                DoctorStep.MAGNETIC -> Step4MagneticScreen()
+                DoctorStep.BLUELIGHT -> Step5BlueLightScreen()
+                DoctorStep.SHUTDOWN -> Step6ShutdownScreen()
             }
         }
     }

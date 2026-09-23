@@ -3,12 +3,12 @@ package com.igem2026.doctorapp.ui.components
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -21,6 +21,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
@@ -41,7 +42,7 @@ fun LensPreviewWindow(connected: Boolean, modifier: Modifier = Modifier) {
         color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.35f),
         border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
     ) {
-        Column(modifier = Modifier.padding(12.dp)) {
+        Column(modifier = Modifier.fillMaxSize().padding(12.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Box(
                     modifier = Modifier
@@ -68,7 +69,7 @@ fun LensPreviewWindow(connected: Boolean, modifier: Modifier = Modifier) {
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .aspectRatio(16f / 9f)
+                    .weight(1f, fill = true)
                     .background(Color(0xFF0E1116), RoundedCornerShape(8.dp)),
                 contentAlignment = Alignment.Center,
             ) {
@@ -95,44 +96,21 @@ fun LensPreviewWindow(connected: Boolean, modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun HardwareSchematicCard(
-    title: String,
+fun SchematicIcon(
     enabled: Boolean,
     modifier: Modifier = Modifier,
-    diagram: @Composable (Modifier) -> Unit,
+    content: @Composable (Boolean, Modifier) -> Unit,
 ) {
-    Surface(
-        modifier = modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(12.dp),
-        color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.35f),
-        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+    Box(
+        modifier = modifier
+            .size(52.dp)
+            .clip(RoundedCornerShape(8.dp))
+            .border(1.dp, MaterialTheme.colorScheme.outlineVariant, RoundedCornerShape(8.dp))
+            .background(MaterialTheme.colorScheme.surface)
+            .padding(3.dp),
+        contentAlignment = Alignment.Center,
     ) {
-        Column(modifier = Modifier.padding(12.dp)) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Box(
-                    modifier = Modifier
-                        .size(10.dp)
-                        .background(
-                            if (enabled) Color(0xFF2E7D32) else Color(0xFF9E9E9E),
-                            CircleShape,
-                        ),
-                )
-                Spacer(Modifier.width(8.dp))
-                Text(
-                    text = title,
-                    style = MaterialTheme.typography.titleSmall,
-                    modifier = Modifier.weight(1f),
-                )
-                Text(
-                    text = if (enabled) "已开启" else "已关闭",
-                    style = MaterialTheme.typography.labelMedium,
-                    fontWeight = FontWeight.SemiBold,
-                    color = if (enabled) Color(0xFF2E7D32) else MaterialTheme.colorScheme.outline,
-                )
-            }
-            Spacer(Modifier.size(10.dp))
-            diagram(Modifier.fillMaxWidth().aspectRatio(16f / 9f))
-        }
+        content(enabled, Modifier.fillMaxSize())
     }
 }
 
@@ -170,15 +148,18 @@ fun MagneticFieldSchematic(enabled: Boolean, modifier: Modifier = Modifier) {
         val rightEdge = sX - poleW / 2
 
         if (enabled) {
+            val stroke = size.width * 0.045f
+            val head = size.width * 0.11f
+            val wing = size.width * 0.06f
             val curves = listOf(
-                FieldCurve(leftEdge, h * 0.28f, rightEdge, h * 0.28f, 40f),
+                FieldCurve(leftEdge, h * 0.25f, rightEdge, h * 0.25f, 0f),
                 FieldCurve(leftEdge, h * 0.50f, rightEdge, h * 0.50f, 0f),
-                FieldCurve(leftEdge, h * 0.72f, rightEdge, h * 0.72f, -40f),
+                FieldCurve(leftEdge, h * 0.75f, rightEdge, h * 0.75f, 0f),
             )
             curves.forEach { (fx, fy, tx, ty, bulge) ->
-                drawFieldLine(fx, fy, tx, ty, bulge, lineBlue)
+                drawFieldLine(fx, fy, tx, ty, bulge, lineBlue, stroke)
                 val tipY = (fy + ty) / 2 - 0.75f * bulge
-                drawArrowTip(Offset((fx + tx) / 2, tipY), rightEdge > fx, lineBlue)
+                drawArrowTip(Offset((fx + tx) / 2, tipY), rightEdge > fx, lineBlue, head, wing)
             }
         }
     }
@@ -199,6 +180,7 @@ private fun DrawScope.drawFieldLine(
     toY: Float,
     bulge: Float,
     color: Color,
+    strokeWidth: Float,
 ) {
     val path = Path().apply {
         moveTo(fromX, fromY)
@@ -211,17 +193,21 @@ private fun DrawScope.drawFieldLine(
     drawPath(
         path = path,
         color = color,
-        style = Stroke(width = 3.dp.toPx(), cap = StrokeCap.Round),
+        style = Stroke(width = strokeWidth, cap = StrokeCap.Round),
     )
 }
 
-private fun DrawScope.drawArrowTip(point: Offset, pointingRight: Boolean, color: Color) {
+private fun DrawScope.drawArrowTip(
+    point: Offset,
+    pointingRight: Boolean,
+    color: Color,
+    head: Float,
+    wing: Float,
+) {
     val dir = if (pointingRight) 1f else -1f
-    val head = 9.dp.toPx()
-    val wing = 5.dp.toPx()
     val base = Offset(point.x - dir * head, point.y)
-    drawLine(color, point, Offset(base.x, base.y - wing), strokeWidth = 2.5.dp.toPx())
-    drawLine(color, point, Offset(base.x, base.y + wing), strokeWidth = 2.5.dp.toPx())
+    drawLine(color, point, Offset(base.x, base.y - wing), strokeWidth = head * 0.28f)
+    drawLine(color, point, Offset(base.x, base.y + wing), strokeWidth = head * 0.28f)
 }
 
 @Composable
@@ -275,14 +261,14 @@ fun BlueLightSchematic(enabled: Boolean, modifier: Modifier = Modifier) {
                 val x = w * (0.28f + i * 0.11f)
                 drawLine(
                     color = Color.White.copy(alpha = 0.55f),
-                    start = Offset(x, lampBottom + 4.dp.toPx()),
+                    start = Offset(x, lampBottom + h * 0.03f),
                     end = Offset(x, h * (0.22f + i * 0.15f)),
-                    strokeWidth = 2.dp.toPx(),
+                    strokeWidth = w * 0.022f,
                 )
             }
             drawCircle(
                 color = Color.White,
-                radius = 4.dp.toPx(),
+                radius = w * 0.05f,
                 center = Offset(w / 2, (lampTop + lampBottom) / 2),
             )
         } else {
