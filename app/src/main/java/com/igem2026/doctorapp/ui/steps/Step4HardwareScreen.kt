@@ -23,6 +23,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
+import com.igem2026.doctorapp.ui.components.BlueLightSchematic
+import com.igem2026.doctorapp.ui.components.HardwareSchematicCard
+import com.igem2026.doctorapp.ui.components.LensPreviewWindow
+import com.igem2026.doctorapp.ui.components.MagneticFieldSchematic
 import com.igem2026.doctorapp.ui.components.PlaceholderInline
 import com.igem2026.doctorapp.ui.components.RadioChip
 import com.igem2026.doctorapp.ui.components.SectionTitle
@@ -56,8 +60,30 @@ fun Step4HardwareScreen() {
         SectionTitle("硬件开关")
         ToggleRow("注射（加载样本/试剂）", injection) { injection = it }
         ToggleRow("连接硬件镜头", lensConnected) { lensConnected = it }
+
+        LensPreviewWindow(
+            connected = lensConnected,
+            modifier = Modifier.fillMaxWidth(),
+        )
+
         ToggleRow("打开磁场", magneticField) { magneticField = it }
         ToggleRow("蓝光开关", blueLight) { blueLight = it }
+
+        HardwareSchematicCard(
+            title = "磁场示意图",
+            enabled = magneticField,
+            modifier = Modifier.fillMaxWidth(),
+        ) { diagramModifier ->
+            MagneticFieldSchematic(enabled = magneticField, modifier = diagramModifier)
+        }
+
+        HardwareSchematicCard(
+            title = "蓝光示意图",
+            enabled = blueLight,
+            modifier = Modifier.fillMaxWidth(),
+        ) { diagramModifier ->
+            BlueLightSchematic(enabled = blueLight, modifier = diagramModifier)
+        }
 
         SectionTitle("倒计时 · 模式选择")
         Row(
