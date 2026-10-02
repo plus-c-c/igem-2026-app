@@ -1,5 +1,6 @@
 package com.igem2026.doctorapp.ui
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -10,11 +11,6 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
-import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.togetherWith
 import androidx.compose.material3.Button
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
@@ -30,12 +26,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.igem2026.doctorapp.ui.steps.HardwareChainScreen
 import com.igem2026.doctorapp.ui.steps.Step1OverviewScreen
-import com.igem2026.doctorapp.ui.steps.Step3InjectionScreen
 import com.igem2026.doctorapp.ui.steps.Step3TimingScreen
-import com.igem2026.doctorapp.ui.steps.Step4MagneticScreen
-import com.igem2026.doctorapp.ui.steps.Step5BlueLightScreen
-import com.igem2026.doctorapp.ui.steps.Step6ShutdownScreen
 
 enum class DoctorStep(val title: String, val subtitle: String) {
     OVERVIEW("1 · 总体说明书", "使用流程与安全须知"),
@@ -117,23 +110,18 @@ fun WizardScreen(consumeStatusInsets: Boolean = true) {
             }
         },
     ) { innerPadding ->
-        AnimatedContent(
-            targetState = currentIndex,
-            transitionSpec = {
-                fadeIn(tween(220)) togetherWith fadeOut(tween(150))
-            },
+        Box(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding),
-            label = "step-transition",
-        ) { index ->
-            when (steps[index]) {
+        ) {
+            when (steps[currentIndex]) {
                 DoctorStep.OVERVIEW -> Step1OverviewScreen()
                 DoctorStep.TIMING -> Step3TimingScreen()
-                DoctorStep.INJECTION -> Step3InjectionScreen()
-                DoctorStep.MAGNETIC -> Step4MagneticScreen()
-                DoctorStep.BLUELIGHT -> Step5BlueLightScreen()
-                DoctorStep.SHUTDOWN -> Step6ShutdownScreen()
+                DoctorStep.INJECTION,
+                DoctorStep.MAGNETIC,
+                DoctorStep.BLUELIGHT,
+                DoctorStep.SHUTDOWN -> HardwareChainScreen(steps[currentIndex])
             }
         }
     }
