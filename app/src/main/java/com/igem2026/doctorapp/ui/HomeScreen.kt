@@ -18,7 +18,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.igem2026.doctorapp.ui.components.PlaceholderInline
 
 @Composable
 fun HomeScreen(
@@ -39,7 +38,7 @@ fun HomeScreen(
         )
         Spacer(Modifier.height(4.dp))
         Text(
-            text = "模块导航 · 框架原型",
+            text = "模块导航",
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
@@ -56,8 +55,6 @@ fun HomeScreen(
             description = "流程向导（总体说明书 · 混合计时 · 注射与硬件）与预订下单选项差异化说明书",
             onClick = onOpenApplication,
         )
-        Spacer(Modifier.height(20.dp))
-        PlaceholderInline("<more_modules_placeholder：实验室质控 / 数据导出 待接入>")
     }
 }
 

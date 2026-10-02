@@ -54,7 +54,7 @@ fun LensPreviewWindow(connected: Boolean, modifier: Modifier = Modifier) {
                 )
                 Spacer(Modifier.width(8.dp))
                 Text(
-                    text = "镜头画面（预留窗口）",
+                    text = "镜头画面",
                     style = MaterialTheme.typography.titleSmall,
                     modifier = Modifier.weight(1f),
                 )
@@ -82,9 +82,9 @@ fun LensPreviewWindow(connected: Boolean, modifier: Modifier = Modifier) {
                     Spacer(Modifier.size(6.dp))
                     Text(
                         text = if (connected) {
-                            "<camera_preview_placeholder：等待镜头 SDK 接入>"
+                            "画面将在镜头接入后实时显示。"
                         } else {
-                            "<waiting_for_hardware_lens_connection>"
+                            "连接镜头后将显示实时画面。"
                         },
                         style = MaterialTheme.typography.bodySmall,
                         color = Color(0xFF90A4AE),

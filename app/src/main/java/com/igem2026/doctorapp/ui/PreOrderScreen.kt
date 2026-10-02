@@ -45,8 +45,8 @@ fun PreOrderScreen(
     var lipidPeptideIndex by rememberSaveable { mutableIntStateOf(0) }
     var orderQuantity by rememberSaveable { mutableStateOf("") }
 
-    val peptides = listOf("<吸附短肽A>", "<吸附短肽B>", "<吸附短肽C>")
-    val lipidPeptides = listOf("<脂质体肽段X>", "<脂质体肽段Y>", "<脂质体肽段Z>")
+    val peptides = listOf("吸附短肽 A", "吸附短肽 B", "吸附短肽 C")
+    val lipidPeptides = listOf("脂质体肽段 X", "脂质体肽段 Y", "脂质体肽段 Z")
 
     Column(
         modifier = Modifier
@@ -84,7 +84,7 @@ fun PreOrderScreen(
                 RadioChip(label = label, selected = peptideIndex == i, onClick = { peptideIndex = i })
             }
         }
-        PlaceholderInline("<不同吸附短肽对目标位点亲和力 / 特异性差异说明占位>")
+        PlaceholderInline("不同吸附短肽对目标位点的结合亲和力与特异性存在差异，选型时请结合应用场景与目标位点特性。")
 
         SectionTitle("脂质体连接肽段选择")
         FlowRow(
@@ -95,7 +95,7 @@ fun PreOrderScreen(
                 RadioChip(label = label, selected = lipidPeptideIndex == i, onClick = { lipidPeptideIndex = i })
             }
         }
-        PlaceholderInline("<脂质体连接肽段功能与载荷差异说明占位>")
+        PlaceholderInline("脂质体连接肽段的递送功能与载荷能力各有侧重，选型时请对照产品参数说明。")
 
         SectionTitle("预订数量")
         OutlinedTextField(
@@ -113,7 +113,7 @@ fun PreOrderScreen(
         LabelValueRow(label = "脂质体连接肽段", value = lipidPeptides[lipidPeptideIndex])
         LabelValueRow(
             label = "数量",
-            value = if (orderQuantity.isBlank()) "<未填写>" else "$orderQuantity mg/支",
+            value = if (orderQuantity.isBlank()) "未填写" else "$orderQuantity mg/支",
         )
 
         Button(
@@ -123,6 +123,6 @@ fun PreOrderScreen(
             Text("提交预订（下单）")
         }
 
-        PlaceholderInline("<pre_order_framework_placeholder：下单接口待接入 · 提交后转入应用界面>")
+        PlaceholderInline("提交后自动转入「应用」流程，订单信息由项目组统一处理。")
     }
 }

@@ -14,27 +14,23 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 
-const val PLACEHOLDER = "<placeholder_text>"
-
 @Composable
-fun PlaceholderInline(text: String = PLACEHOLDER, modifier: Modifier = Modifier) {
+fun PlaceholderInline(text: String, modifier: Modifier = Modifier) {
     Text(
         text = text,
         modifier = modifier,
         style = MaterialTheme.typography.bodyMedium,
-        color = MaterialTheme.colorScheme.outline,
-        fontFamily = FontFamily.Monospace,
-        fontWeight = FontWeight.Light,
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
+        fontWeight = FontWeight.Normal,
     )
 }
 
 @Composable
 fun PlaceholderBlock(
-    text: String = PLACEHOLDER,
+    text: String,
     modifier: Modifier = Modifier,
     minHeight: androidx.compose.ui.unit.Dp = 72.dp,
 ) {

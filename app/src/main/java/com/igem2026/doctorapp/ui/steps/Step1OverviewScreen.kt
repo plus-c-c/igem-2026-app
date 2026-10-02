@@ -20,9 +20,62 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.igem2026.doctorapp.ui.components.PlaceholderInline
 import com.igem2026.doctorapp.ui.components.SectionTitle
+import com.igem2026.doctorapp.ui.components.TEST_QR_PAYLOAD
+
+private data class ModuleDesc(val name: String, val desc: String)
+
+private data class ProductDoc(
+    val productName: String,
+    val modules: List<ModuleDesc>,
+    val process: List<String>,
+    val safety: List<String>,
+    val storage: List<String>,
+)
+
+private fun productDoc(payload: String): ProductDoc? = when (payload) {
+    TEST_QR_PAYLOAD -> ProductDoc(
+        productName = "PBS-SELP-RU-sPS 功能模块使用说明书",
+        modules = listOf(
+            ModuleDesc(
+                "sPS（蜘蛛丝蛋白模块）",
+                "以蜘蛛丝蛋白为核心的高强度结构单元，具备良好的生物相容性与可控降解性，构成体系力学骨架，支持注射后形态稳定与长期力学支撑。",
+            ),
+            ModuleDesc(
+                "SELP（丝-弹性蛋白样多肽模块）",
+                "兼具丝绸强度与弹性蛋白柔韧的杂化多肽，赋予体系弹性回复与应力缓冲能力，并协同温度相关的凝胶化行为。",
+            ),
+            ModuleDesc(
+                "Ru（光引发交联单元）",
+                "钌基光引发交联体系，配套蓝光照射工艺，可按需调节交联密度与力学强度，交联过程温和、工艺窗口宽。",
+            ),
+            ModuleDesc(
+                "PBS（磷酸盐缓冲液模块）",
+                "生理缓冲体系，维持混合液 pH 与渗透压稳定，保障各模块在不同工序条件下的溶解性与稳定性。",
+            ),
+        ),
+        process = listOf(
+            "将 sPS 与 SELP 按目标比例分别溶解，并以 PBS 定容至工作浓度。",
+            "加入 Ru 交联单元，充分混匀并排除气泡，避免局部浓度不均。",
+            "完成注射或封装后，按需开启磁场，引导蛋白取向与空间分布。",
+            "开启蓝光，按设定参数照射完成交联固化。",
+            "关闭磁场与蓝光，进入成品观察与后续操作。",
+        ),
+        safety = listOf(
+            "操作全程佩戴实验服与手套；蓝光照射期间务必佩戴蓝光防护镜。",
+            "远离强磁干扰源；磁场开启期间，携带金属物品的人员应避免进入工作区。",
+            "避免与强酸、强碱及有机溶剂直接接触。",
+            "使用后废弃物按生物材料废弃物流程处置。",
+        ),
+        storage = listOf(
+            "2–8 ℃ 避光冷藏，避免反复冻融。",
+            "每批交付前完成纯度、内毒素与力学性能抽检，报告随附二维码关联。",
+        ),
+    )
+    else -> null
+}
 
 @Composable
-fun Step1OverviewScreen() {
+private fun ProductManualScreen(doc: ProductDoc) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -35,25 +88,122 @@ fun Step1OverviewScreen() {
             style = MaterialTheme.typography.titleLarge,
         )
         Text(
-            text = "本应用面向医生，围绕 <样本/试剂> 的 <混合-成像-注射> 流程提供参数设定、计时与硬件控制。",
+            text = doc.productName,
+            style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.SemiBold,
+        )
+
+        SectionTitle("功能模块组成")
+        doc.modules.forEach { module ->
+            ManualCard(title = module.name, body = module.desc)
+        }
+
+        SectionTitle("使用流程")
+        doc.process.forEachIndexed { index, step ->
+            Text(
+                text = "${index + 1}. $step",
+                style = MaterialTheme.typography.bodyMedium,
+            )
+        }
+
+        SectionTitle("安全须知")
+        doc.safety.forEach { item ->
+            Text(
+                text = "· $item",
+                style = MaterialTheme.typography.bodyMedium,
+            )
+        }
+
+        SectionTitle("存储与质控")
+        doc.storage.forEach { item ->
+            Text(
+                text = "· $item",
+                style = MaterialTheme.typography.bodyMedium,
+            )
+        }
+    }
+}
+
+@Composable
+private fun ManualCard(title: String, body: String) {
+    Surface(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(18.dp),
+        color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.35f),
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+    ) {
+        Column(modifier = Modifier.padding(14.dp)) {
+            Text(
+                text = title,
+                style = MaterialTheme.typography.titleSmall,
+                fontWeight = FontWeight.SemiBold,
+            )
+            Spacer(Modifier.height(4.dp))
+            Text(
+                text = body,
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+    }
+}
+
+@Composable
+fun Step1OverviewScreen(payload: String = "") {
+    val doc = productDoc(payload)
+    if (doc != null) {
+        ProductManualScreen(doc)
+        return
+    }
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
+            .padding(horizontal = 20.dp, vertical = 16.dp),
+        verticalArrangement = Arrangement.spacedBy(14.dp),
+    ) {
+        Text(
+            text = "总体说明书",
+            style = MaterialTheme.typography.titleLarge,
+        )
+        Text(
+            text = "本应用面向医生，围绕样本试剂的混合、成像与注射流程提供参数设定、计时与硬件控制。",
+            style = MaterialTheme.typography.bodyMedium,
+        )
+
+        SectionTitle("0. 说明书来源（随二维码）")
+        Text(
+            text = if (payload.isBlank()) {
+                "未识别二维码，当前显示通用说明书。"
+            } else {
+                "来源二维码：$payload"
+            },
             style = MaterialTheme.typography.bodyMedium,
         )
 
         SectionTitle("1. 用途")
         Text(
-            text = "<application_purpose_placeholder>",
+            text = if (payload.isBlank()) {
+                "面向目标体系构建，提供吸附短肽包被与脂质体递送的一体化操作指引。"
+            } else {
+                "用途信息随已识别二维码载入的产品数据实时显示。"
+            },
             style = MaterialTheme.typography.bodyMedium,
         )
 
         SectionTitle("2. 操作流程概览")
         Text(
-            text = "步骤 2 进行混合计时与可视化模拟；步骤 3 连接镜头并完成注射、启动观察倒计时；步骤 4 打开磁场；步骤 5 打开蓝光；步骤 6 关闭磁场与蓝光；另可通过「预订下单」选择吸附短肽与脂质体连接肽段。",
+            text = "步骤 2 进行混合计时；步骤 3 连接镜头并完成注射、启动观察倒计时；步骤 4 打开磁场；步骤 5 打开蓝光；步骤 6 关闭磁场与蓝光；另可通过「预订下单」选择吸附短肽与脂质体连接肽段。",
             style = MaterialTheme.typography.bodyMedium,
         )
 
         SectionTitle("3. 安全须知")
         Text(
-            text = "<safety_instructions_placeholder>",
+            text = if (payload.isBlank()) {
+                "操作前确认设备状态；全程佩戴实验服与手套；磁场与蓝光步骤期间执行对应防护。"
+            } else {
+                "安全要求以随附说明书为准，异常情况立即终止操作并上报。"
+            },
             style = MaterialTheme.typography.bodyMedium,
         )
 
@@ -66,11 +216,11 @@ fun Step1OverviewScreen() {
         )
         DiffCard(
             title = "亲和力与特异性",
-            body = "<吸附短肽A/B/C 对目标位点亲和力、结合特异性差异说明占位>",
+            body = "吸附短肽对目标位点的结合亲和力与特异性具有差异，需结合应用场景选型。",
         )
         DiffCard(
             title = "稳定性与存储",
-            body = "<短肽结构稳定性、存储条件差异说明占位>",
+            body = "短肽结构稳定性与存储条件因批次而异，可随二维码关联资料核对批次。",
         )
         Text(
             text = "脂质体连接肽段",
@@ -79,24 +229,18 @@ fun Step1OverviewScreen() {
         )
         DiffCard(
             title = "功能与载荷",
-            body = "<脂质体连接肽段X/Y/Z 的递送功能与载荷能力差异说明占位>",
+            body = "脂质体连接肽段的递送功能与载荷能力各有侧重，请对照产品参数选型。",
         )
         DiffCard(
             title = "交联掺杂适配",
-            body = "<交联后掺杂工艺下各肽段的适配性差异说明占位>",
+            body = "交联后掺杂工艺下，各肽段适配性需结合设备与工艺参数评估。",
         )
-        PlaceholderInline("<framework：预订下单选项的详细差异化参数与临床文案将在后续版本补齐>")
+        PlaceholderInline("各肽段差异化参数详见随附产品资料。")
 
         SectionTitle("5. 免责声明与联系人")
         Text(
-            text = "<disclaimer_and_contact_placeholder>",
+            text = "本说明书为项目内部参考文件，具体操作以最新批次规程为准；如需协助，请联系项目组。",
             style = MaterialTheme.typography.bodyMedium,
-        )
-
-        Text(
-            text = "注：本版本为框架原型，实际参数与文案将在后续版本补齐。",
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
     }
 }

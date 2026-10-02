@@ -212,7 +212,7 @@ private fun HardwareTimer() {
     var running by remember { mutableStateOf(false) }
     var elapsed by remember { mutableLongStateOf(0L) }
 
-    val presets = listOf("<预制方案A>", "<预制方案B>", "<预制方案C>")
+    val presets = listOf("预制方案 A", "预制方案 B", "预制方案 C")
     val totalSeconds = if (manualMode) {
         manualSeconds.toIntOrNull() ?: 0
     } else {
