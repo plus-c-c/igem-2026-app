@@ -33,9 +33,12 @@ import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.igem2026.doctorapp.ui.AppLanguage
+import com.igem2026.doctorapp.ui.LocalAppLanguage
 
 @Composable
 fun LensPreviewWindow(connected: Boolean, modifier: Modifier = Modifier) {
+    val english = LocalAppLanguage.current == AppLanguage.ENGLISH
     Surface(
         modifier = modifier.fillMaxWidth(),
         shape = RoundedCornerShape(12.dp),
@@ -54,12 +57,16 @@ fun LensPreviewWindow(connected: Boolean, modifier: Modifier = Modifier) {
                 )
                 Spacer(Modifier.width(8.dp))
                 Text(
-                    text = "镜头画面",
+                    text = if (english) "Camera View" else "镜头画面",
                     style = MaterialTheme.typography.titleSmall,
                     modifier = Modifier.weight(1f),
                 )
                 Text(
-                    text = if (connected) "已连接" else "未连接",
+                    text = if (english) {
+                        if (connected) "Connected" else "Disconnected"
+                    } else {
+                        if (connected) "已连接" else "未连接"
+                    },
                     style = MaterialTheme.typography.labelMedium,
                     fontWeight = FontWeight.SemiBold,
                     color = if (connected) Color(0xFF2E7D32) else MaterialTheme.colorScheme.outline,
@@ -75,16 +82,20 @@ fun LensPreviewWindow(connected: Boolean, modifier: Modifier = Modifier) {
             ) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Text(
-                        text = if (connected) "实时镜头画面" else "镜头未连接",
+                        text = if (english) {
+                            if (connected) "Live Camera View" else "Camera Not Connected"
+                        } else {
+                            if (connected) "实时镜头画面" else "镜头未连接"
+                        },
                         style = MaterialTheme.typography.titleSmall,
                         color = Color(0xFFECEFF1),
                     )
                     Spacer(Modifier.size(6.dp))
                     Text(
-                        text = if (connected) {
-                            "画面将在镜头接入后实时显示。"
+                        text = if (english) {
+                            if (connected) "The live feed will appear here." else "Connect the camera to display the live feed."
                         } else {
-                            "连接镜头后将显示实时画面。"
+                            if (connected) "画面将在镜头接入后实时显示。" else "连接镜头后将显示实时画面。"
                         },
                         style = MaterialTheme.typography.bodySmall,
                         color = Color(0xFF90A4AE),

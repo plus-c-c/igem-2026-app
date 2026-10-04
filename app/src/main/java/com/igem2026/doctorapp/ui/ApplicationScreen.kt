@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun ApplicationScreen(onBack: () -> Unit) {
+    val english = LocalAppLanguage.current == AppLanguage.ENGLISH
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
@@ -34,15 +35,19 @@ fun ApplicationScreen(onBack: () -> Unit) {
                         .padding(horizontal = 8.dp, vertical = 4.dp),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    TextButton(onClick = onBack) { Text("← 返回") }
+                    TextButton(onClick = onBack) { Text(if (english) "← Back to Home" else "← 返回首页") }
                     Column {
                         Text(
-                            text = "应用",
+                            text = if (english) "Operating Instructions" else "操作说明",
                             style = MaterialTheme.typography.headlineSmall,
                             fontWeight = FontWeight.Bold,
                         )
                         Text(
-                            text = "流程向导（总体说明书 · 混合计时 · 注射与硬件）",
+                            text = if (english) {
+                                "Instructions and reagent preparation workflow guide"
+                            } else {
+                                "说明书及备药流程向导"
+                            },
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )

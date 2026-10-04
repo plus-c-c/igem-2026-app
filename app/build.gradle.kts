@@ -13,7 +13,8 @@ val signingProps = Properties().apply {
 
 android {
     namespace = "com.igem2026.doctorapp"
-    compileSdk = 36
+    compileSdk = 37
+    buildToolsVersion = "36.0.0"
 
     defaultConfig {
         applicationId = "com.igem2026.doctorapp"

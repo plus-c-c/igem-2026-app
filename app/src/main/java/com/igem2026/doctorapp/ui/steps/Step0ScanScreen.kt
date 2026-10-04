@@ -40,6 +40,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.text.input.ImeAction
 import androidx.core.content.ContextCompat
+import com.igem2026.doctorapp.ui.AppLanguage
+import com.igem2026.doctorapp.ui.LocalAppLanguage
 import com.igem2026.doctorapp.ui.components.CameraQrPreview
 
 @Composable
@@ -47,6 +49,7 @@ fun Step0ScanScreen(
     payload: String,
     onPayloadChange: (String) -> Unit,
 ) {
+    val english = LocalAppLanguage.current == AppLanguage.ENGLISH
     val context = LocalContext.current
     var hasCameraPermission by remember {
         mutableStateOf(
@@ -88,7 +91,11 @@ fun Step0ScanScreen(
         }
         if (!cameraActive) {
             Text(
-                text = "未检测到摄像头\n真机 / 映射 webcam 可正常取景",
+                text = if (english) {
+                    "Camera not detected\nUse a physical device or mapped webcam for preview"
+                } else {
+                    "未检测到摄像头\n真机 / 映射 webcam 可正常取景"
+                },
                 modifier = Modifier
                     .padding(20.dp)
                     .align(Alignment.Center),
@@ -121,7 +128,11 @@ fun Step0ScanScreen(
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 Text(
-                    text = "当前识别：${payload.ifBlank { "未识别" }}",
+                    text = if (english) {
+                        "Current scan: ${payload.ifBlank { "Unrecognized" }}"
+                    } else {
+                        "当前识别：${payload.ifBlank { "未识别" }}"
+                    },
                     style = MaterialTheme.typography.titleSmall,
                     color = MaterialTheme.colorScheme.primary,
                 )
@@ -129,7 +140,7 @@ fun Step0ScanScreen(
                     value = draft,
                     onValueChange = { draft = it },
                     modifier = Modifier.fillMaxWidth(),
-                    label = { Text("二维码内容") },
+                    label = { Text(if (english) "QR code content" else "二维码内容") },
                     singleLine = true,
                     keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
                     keyboardActions = KeyboardActions(onDone = { onPayloadChange(draft.trim()) }),

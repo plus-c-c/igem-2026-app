@@ -41,12 +41,21 @@ fun PreOrderScreen(
     onBack: () -> Unit,
     onOrderPlaced: () -> Unit,
 ) {
+    val english = LocalAppLanguage.current == AppLanguage.ENGLISH
     var peptideIndex by rememberSaveable { mutableIntStateOf(0) }
     var lipidPeptideIndex by rememberSaveable { mutableIntStateOf(0) }
     var orderQuantity by rememberSaveable { mutableStateOf("") }
 
-    val peptides = listOf("吸附短肽 A", "吸附短肽 B", "吸附短肽 C")
-    val lipidPeptides = listOf("脂质体肽段 X", "脂质体肽段 Y", "脂质体肽段 Z")
+    val peptides = if (english) {
+        listOf("Adsorption Peptide A", "Adsorption Peptide B", "Adsorption Peptide C")
+    } else {
+        listOf("吸附短肽 A", "吸附短肽 B", "吸附短肽 C")
+    }
+    val lipidPeptides = if (english) {
+        listOf("Liposome-linking Peptide X", "Liposome-linking Peptide Y", "Liposome-linking Peptide Z")
+    } else {
+        listOf("脂质体肽段 X", "脂质体肽段 Y", "脂质体肽段 Z")
+    }
 
     Column(
         modifier = Modifier
@@ -60,22 +69,22 @@ fun PreOrderScreen(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            TextButton(onClick = onBack) { Text("← 返回") }
+            TextButton(onClick = onBack) { Text(if (english) "← Back to Home" else "← 返回首页") }
             Column {
                 Text(
-                    text = "预订下单",
+                    text = if (english) "Place an Order" else "预订下单",
                     style = MaterialTheme.typography.headlineSmall,
                     fontWeight = FontWeight.Bold,
                 )
                 Text(
-                    text = "吸附短肽 · 脂质体连接肽段",
+                    text = if (english) "Adsorption Peptide · Liposome-linking Peptide" else "吸附短肽 · 脂质体连接肽段",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
         }
 
-        SectionTitle("吸附短肽（Adsorption Peptide）选择")
+        SectionTitle(if (english) "Select Adsorption Peptide" else "吸附短肽（Adsorption Peptide）选择")
         FlowRow(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(6.dp),
@@ -84,9 +93,9 @@ fun PreOrderScreen(
                 RadioChip(label = label, selected = peptideIndex == i, onClick = { peptideIndex = i })
             }
         }
-        PlaceholderInline("不同吸附短肽对目标位点的结合亲和力与特异性存在差异，选型时请结合应用场景与目标位点特性。")
+        PlaceholderInline(if (english) "Adsorption peptides differ in binding affinity and specificity. Select one based on the use case and target site." else "不同吸附短肽对目标位点的结合亲和力与特异性存在差异，选型时请结合应用场景与目标位点特性。")
 
-        SectionTitle("脂质体连接肽段选择")
+        SectionTitle(if (english) "Select Liposome-linking Peptide" else "脂质体连接肽段选择")
         FlowRow(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(6.dp),
@@ -95,34 +104,38 @@ fun PreOrderScreen(
                 RadioChip(label = label, selected = lipidPeptideIndex == i, onClick = { lipidPeptideIndex = i })
             }
         }
-        PlaceholderInline("脂质体连接肽段的递送功能与载荷能力各有侧重，选型时请对照产品参数说明。")
+        PlaceholderInline(if (english) "Liposome-linking peptides differ in delivery function and payload capacity. Refer to the product specifications." else "脂质体连接肽段的递送功能与载荷能力各有侧重，选型时请对照产品参数说明。")
 
-        SectionTitle("预订数量")
+        SectionTitle(if (english) "Order Quantity" else "预订数量")
         OutlinedTextField(
             value = orderQuantity,
             onValueChange = { orderQuantity = it.filter { c -> c.isDigit() } },
             modifier = Modifier.fillMaxWidth(),
-            label = { Text("数量（mg / 支）") },
-            placeholder = { PlaceholderInline("例如 10") },
+            label = { Text(if (english) "Quantity (mg / vial)" else "数量（mg / 支）") },
+            placeholder = { PlaceholderInline(if (english) "e.g. 10" else "例如 10") },
             singleLine = true,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
         )
 
-        SectionTitle("下单摘要")
-        LabelValueRow(label = "吸附短肽", value = peptides[peptideIndex])
-        LabelValueRow(label = "脂质体连接肽段", value = lipidPeptides[lipidPeptideIndex])
+        SectionTitle(if (english) "Order Summary" else "下单摘要")
+        LabelValueRow(label = if (english) "Adsorption Peptide" else "吸附短肽", value = peptides[peptideIndex])
+        LabelValueRow(label = if (english) "Liposome-linking Peptide" else "脂质体连接肽段", value = lipidPeptides[lipidPeptideIndex])
         LabelValueRow(
-            label = "数量",
-            value = if (orderQuantity.isBlank()) "未填写" else "$orderQuantity mg/支",
+            label = if (english) "Quantity" else "数量",
+            value = if (orderQuantity.isBlank()) {
+                if (english) "Not entered" else "未填写"
+            } else {
+                if (english) "$orderQuantity mg/vial" else "$orderQuantity mg/支"
+            },
         )
 
         Button(
             onClick = onOrderPlaced,
             modifier = Modifier.fillMaxWidth(),
         ) {
-            Text("提交预订（下单）")
+            Text(if (english) "Submit Order" else "提交预订（下单）")
         }
 
-        PlaceholderInline("提交后自动转入「应用」流程，订单信息由项目组统一处理。")
+        PlaceholderInline(if (english) "After submission, the operating instructions open automatically. The project team processes order details." else "提交后自动转入「操作说明」流程，订单信息由项目组统一处理。")
     }
 }

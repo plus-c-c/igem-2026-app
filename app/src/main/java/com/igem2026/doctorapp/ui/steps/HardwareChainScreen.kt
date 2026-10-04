@@ -36,7 +36,9 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.igem2026.doctorapp.ui.AppLanguage
 import com.igem2026.doctorapp.ui.DoctorStep
+import com.igem2026.doctorapp.ui.LocalAppLanguage
 import com.igem2026.doctorapp.ui.components.LensPreviewWindow
 import com.igem2026.doctorapp.ui.components.PlaceholderInline
 import com.igem2026.doctorapp.ui.components.RadioChip
@@ -107,19 +109,21 @@ private fun InjectionRow(
     lensConnected: Boolean,
     onLensConnectedChange: (Boolean) -> Unit,
 ) {
+    val english = LocalAppLanguage.current == AppLanguage.ENGLISH
     var injected by remember { mutableStateOf(false) }
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(16.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        MiniToggle(label = "连接镜头", checked = lensConnected, onCheckedChange = onLensConnectedChange)
-        MiniToggle(label = "注射", checked = injected) { injected = it }
+        MiniToggle(label = if (english) "Connect Camera" else "连接镜头", checked = lensConnected, onCheckedChange = onLensConnectedChange)
+        MiniToggle(label = if (english) "Inject" else "注射", checked = injected) { injected = it }
     }
 }
 
 @Composable
 private fun MagneticRow() {
+    val english = LocalAppLanguage.current == AppLanguage.ENGLISH
     var magneticOn by remember { mutableStateOf(false) }
     Row(
         modifier = Modifier.fillMaxWidth(),
@@ -127,7 +131,11 @@ private fun MagneticRow() {
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Text(
-            text = if (magneticOn) "磁场已开启" else "磁场未开启",
+            text = if (english) {
+                if (magneticOn) "Magnetic Field Enabled" else "Magnetic Field Disabled"
+            } else {
+                if (magneticOn) "磁场已开启" else "磁场未开启"
+            },
             style = MaterialTheme.typography.titleSmall,
             fontWeight = FontWeight.SemiBold,
             color = if (magneticOn) {
@@ -141,13 +149,14 @@ private fun MagneticRow() {
             onClick = { magneticOn = true },
             enabled = !magneticOn,
         ) {
-            Text("打开磁场")
+            Text(if (english) "Enable Magnetic Field" else "打开磁场")
         }
     }
 }
 
 @Composable
 private fun BlueLightRow() {
+    val english = LocalAppLanguage.current == AppLanguage.ENGLISH
     var blueLightOn by remember { mutableStateOf(false) }
     Row(
         modifier = Modifier.fillMaxWidth(),
@@ -155,7 +164,11 @@ private fun BlueLightRow() {
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Text(
-            text = if (blueLightOn) "蓝光已开启" else "蓝光未开启",
+            text = if (english) {
+                if (blueLightOn) "Blue Light Enabled" else "Blue Light Disabled"
+            } else {
+                if (blueLightOn) "蓝光已开启" else "蓝光未开启"
+            },
             style = MaterialTheme.typography.titleSmall,
             fontWeight = FontWeight.SemiBold,
             color = if (blueLightOn) {
@@ -169,13 +182,14 @@ private fun BlueLightRow() {
             onClick = { blueLightOn = true },
             enabled = !blueLightOn,
         ) {
-            Text("打开蓝光")
+            Text(if (english) "Enable Blue Light" else "打开蓝光")
         }
     }
 }
 
 @Composable
 private fun ShutdownRow() {
+    val english = LocalAppLanguage.current == AppLanguage.ENGLISH
     var magneticOn by remember { mutableStateOf(false) }
     var blueLightOn by remember { mutableStateOf(false) }
     val anyOn = magneticOn || blueLightOn
@@ -189,8 +203,8 @@ private fun ShutdownRow() {
             modifier = Modifier.weight(1f),
             horizontalArrangement = Arrangement.spacedBy(16.dp),
         ) {
-            MiniToggle(label = "磁场", checked = magneticOn) { magneticOn = it }
-            MiniToggle(label = "蓝光", checked = blueLightOn) { blueLightOn = it }
+            MiniToggle(label = if (english) "Magnetic Field" else "磁场", checked = magneticOn) { magneticOn = it }
+            MiniToggle(label = if (english) "Blue Light" else "蓝光", checked = blueLightOn) { blueLightOn = it }
         }
         Button(
             onClick = {
@@ -199,20 +213,25 @@ private fun ShutdownRow() {
             },
             enabled = anyOn,
         ) {
-            Text("一键关闭")
+            Text(if (english) "Disable Both" else "一键关闭")
         }
     }
 }
 
 @Composable
 private fun HardwareTimer() {
+    val english = LocalAppLanguage.current == AppLanguage.ENGLISH
     var manualMode by remember { mutableStateOf(true) }
     var manualSeconds by remember { mutableStateOf("") }
     var presetIndex by remember { mutableIntStateOf(0) }
     var running by remember { mutableStateOf(false) }
     var elapsed by remember { mutableLongStateOf(0L) }
 
-    val presets = listOf("预制方案 A", "预制方案 B", "预制方案 C")
+    val presets = if (english) {
+        listOf("Preset A", "Preset B", "Preset C")
+    } else {
+        listOf("预制方案 A", "预制方案 B", "预制方案 C")
+    }
     val totalSeconds = if (manualMode) {
         manualSeconds.toIntOrNull() ?: 0
     } else {
@@ -245,7 +264,7 @@ private fun HardwareTimer() {
         verticalArrangement = Arrangement.spacedBy(4.dp),
     ) {
         Text(
-            text = "计时器",
+            text = if (english) "Timer" else "计时器",
             style = MaterialTheme.typography.labelLarge,
             fontWeight = FontWeight.SemiBold,
             color = MaterialTheme.colorScheme.primary,
@@ -277,8 +296,8 @@ private fun HardwareTimer() {
                 verticalArrangement = Arrangement.spacedBy(4.dp),
             ) {
                 Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                    RadioChip(label = "手动", selected = manualMode, onClick = { manualMode = true })
-                    RadioChip(label = "预制", selected = !manualMode, onClick = { manualMode = false })
+                    RadioChip(label = if (english) "Manual" else "手动", selected = manualMode, onClick = { manualMode = true })
+                    RadioChip(label = if (english) "Preset" else "预制", selected = !manualMode, onClick = { manualMode = false })
                 }
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -291,7 +310,11 @@ private fun HardwareTimer() {
                         modifier = Modifier.weight(1f),
                         enabled = running || totalSeconds > 0,
                     ) {
-                        Text(if (running) "暂停" else "开始倒计时")
+                        Text(if (english) {
+                            if (running) "Pause" else "Start Countdown"
+                        } else {
+                            if (running) "暂停" else "开始倒计时"
+                        })
                     }
                     OutlinedButton(
                         onClick = {
@@ -300,7 +323,7 @@ private fun HardwareTimer() {
                         },
                         enabled = elapsed > 0L || running,
                     ) {
-                        Text("重置")
+                        Text(if (english) "Reset" else "重置")
                     }
                 }
             }
@@ -313,8 +336,8 @@ private fun HardwareTimer() {
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(52.dp),
-                label = { Text("手动倒计时时长（秒）") },
-                placeholder = { PlaceholderInline("例如 120") },
+                label = { Text(if (english) "Manual countdown duration (seconds)" else "手动倒计时时长（秒）") },
+                placeholder = { PlaceholderInline(if (english) "e.g. 120" else "例如 120") },
                 singleLine = true,
             )
         } else {
