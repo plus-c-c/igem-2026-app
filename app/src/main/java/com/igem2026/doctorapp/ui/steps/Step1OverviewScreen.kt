@@ -56,15 +56,13 @@ private fun productDoc(payload: String, english: Boolean): ProductDoc? = when (p
             ),
         ),
         process = listOf(
-            "Add PBS first, followed by SELP, Ru, sPS, and the functional module.",
+            "Add PBS first, then SELP, Ru, sPS, and the functional module, in order.",
             "Mix thoroughly and remove bubbles after each addition to avoid uneven local concentrations.",
-            "After injection or encapsulation, enable the magnetic field as needed to guide protein orientation and distribution.",
-            "Enable blue light and expose according to the configured parameters to complete crosslinking.",
-            "Disable the magnetic field and blue light, then proceed to final observation and follow-up operations.",
+            "Start premixing and wait for the premixer's green light to confirm mixing is complete.",
+            "Proceed with injection or encapsulation, then final observation and follow-up operations.",
         ),
         safety = listOf(
-            "Wear a lab coat and gloves throughout the procedure; wear blue-light protective glasses during exposure.",
-            "Keep away from strong magnetic interference. Personnel carrying metal objects should avoid the work area while the magnetic field is active.",
+            "Wear a lab coat and gloves throughout the procedure.",
             "Avoid direct contact with strong acids, strong bases, and organic solvents.",
             "Dispose of used materials according to the biological-material waste procedure.",
         ),
@@ -95,13 +93,11 @@ private fun productDoc(payload: String, english: Boolean): ProductDoc? = when (p
         process = listOf(
             "先加入 PBS，再依次加入 SELP、Ru、sPS 与功能模块。",
             "每次加入后充分混匀并排除气泡，避免局部浓度不均。",
-            "完成注射或封装后，按需开启磁场，引导蛋白取向与空间分布。",
-            "开启蓝光，按设定参数照射完成交联固化。",
-            "关闭磁场与蓝光，进入成品观察与后续操作。",
+            "启动预混，等待预混器绿灯亮起确认预混完成。",
+            "完成注射或封装，进入最终观察与后续操作。",
         ),
         safety = listOf(
-            "操作全程佩戴实验服与手套；蓝光照射期间务必佩戴蓝光防护镜。",
-            "远离强磁干扰源；磁场开启期间，携带金属物品的人员应避免进入工作区。",
+            "操作全程佩戴实验服与手套。",
             "避免与强酸、强碱及有机溶剂直接接触。",
             "使用后废弃物按生物材料废弃物流程处置。",
         ),
@@ -208,9 +204,9 @@ fun Step1OverviewScreen(payload: String = "") {
         )
         Text(
             text = if (english) {
-                "This app supports clinicians with parameter setup, timing, and hardware controls for reagent mixing, imaging, and injection workflows."
+                "This app guides clinicians through reagent preparation and the bedside workflow."
             } else {
-                "本应用面向医生，围绕样本试剂的混合、成像与注射流程提供参数设定、计时与硬件控制。"
+                "本应用面向医生，提供试剂配制与床旁操作流程的逐步指引。"
             },
             style = MaterialTheme.typography.bodyMedium,
         )
@@ -246,9 +242,9 @@ fun Step1OverviewScreen(payload: String = "") {
         SectionTitle(if (english) "2. Workflow Overview" else "2. 操作流程概览")
         Text(
             text = if (english) {
-                "Step 3 adds PBS, SELP, Ru, sPS, and the functional module in order. Step 4 times mixing. Step 5 connects the camera, completes injection, and starts the observation countdown. Step 6 enables the magnetic field, Step 7 enables blue light, and Step 8 disables both. Use Place an Order to select adsorption and liposome-linking peptides."
+                "Step 2 displays these instructions. Step 3 adds PBS, SELP, Ru, sPS, and the functional module in order. Step 4 premixes; wait for the premixer's green light. Use Place an Order to select adsorption and liposome-linking peptides."
             } else {
-                "步骤 3 按 PBS、SELP、Ru、sPS、功能模块的顺序放入试剂；步骤 4 进行混合计时；步骤 5 连接镜头并完成注射、启动观察倒计时；步骤 6 打开磁场；步骤 7 打开蓝光；步骤 8 关闭磁场与蓝光；另可通过「预订下单」选择吸附短肽与脂质体连接肽段。"
+                "步骤 2 显示本说明书；步骤 3 按 PBS、SELP、Ru、sPS、功能模块的顺序放入试剂；步骤 4 预混并等待预混器绿灯亮起。另可通过「预订下单」选择吸附短肽与脂质体连接肽段。"
             },
             style = MaterialTheme.typography.bodyMedium,
         )
@@ -257,13 +253,13 @@ fun Step1OverviewScreen(payload: String = "") {
         Text(
             text = if (english) {
                 if (payload.isBlank()) {
-                    "Check equipment status before use. Wear a lab coat and gloves, and follow magnetic-field and blue-light safety precautions."
+                    "Check equipment status before use and wear a lab coat and gloves throughout the procedure."
                 } else {
                     "Follow the supplied instructions. Stop the procedure and report immediately if an abnormal condition occurs."
                 }
             } else {
                 if (payload.isBlank()) {
-                    "操作前确认设备状态；全程佩戴实验服与手套；磁场与蓝光步骤期间执行对应防护。"
+                    "操作前确认设备状态；全程佩戴实验服与手套。"
                 } else {
                     "安全要求以随附说明书为准，异常情况立即终止操作并上报。"
                 }

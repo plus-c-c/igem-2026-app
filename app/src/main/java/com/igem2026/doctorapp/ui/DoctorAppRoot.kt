@@ -13,9 +13,9 @@ enum class DoctorModule { HOME, PRE_ORDER, APPLICATION }
 @Composable
 fun DoctorAppRoot() {
     var moduleOrdinal by rememberSaveable { mutableIntStateOf(DoctorModule.HOME.ordinal) }
-    var languageOrdinal by rememberSaveable { mutableIntStateOf(AppLanguage.CHINESE.ordinal) }
+    var languageOrdinal by rememberSaveable { mutableIntStateOf(AppLanguage.ENGLISH.ordinal) }
     val module = DoctorModule.entries.getOrNull(moduleOrdinal) ?: DoctorModule.HOME
-    val language = AppLanguage.entries.getOrNull(languageOrdinal) ?: AppLanguage.CHINESE
+    val language = AppLanguage.entries.getOrNull(languageOrdinal) ?: AppLanguage.ENGLISH
 
     if (module != DoctorModule.HOME) {
         BackHandler { moduleOrdinal = DoctorModule.HOME.ordinal }
@@ -24,13 +24,7 @@ fun DoctorAppRoot() {
     CompositionLocalProvider(LocalAppLanguage provides language) {
         when (module) {
             DoctorModule.HOME -> HomeScreen(
-                onToggleLanguage = {
-                    languageOrdinal = if (language == AppLanguage.CHINESE) {
-                        AppLanguage.ENGLISH.ordinal
-                    } else {
-                        AppLanguage.CHINESE.ordinal
-                    }
-                },
+                onToggleLanguage = null,
                 onOpenPreOrder = { moduleOrdinal = DoctorModule.PRE_ORDER.ordinal },
                 onOpenApplication = { moduleOrdinal = DoctorModule.APPLICATION.ordinal },
             )

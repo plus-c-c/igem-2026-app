@@ -30,7 +30,6 @@ import androidx.compose.material3.TextButton
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.igem2026.doctorapp.ui.steps.HardwareChainScreen
 import com.igem2026.doctorapp.ui.steps.ReagentLoadingScreen
 import com.igem2026.doctorapp.ui.steps.Step0ScanScreen
 import com.igem2026.doctorapp.ui.steps.Step1OverviewScreen
@@ -46,10 +45,6 @@ enum class DoctorStep(
     OVERVIEW("2 · 总体说明书", "使用流程与安全须知", "2 · General Instructions", "Workflow and safety information"),
     REAGENTS("3 · 放入试剂", "请按顺序放入试剂。", "3 · Add Reagents", "Please add reagents in order."),
     TIMING("4 · 预混", "等待预混器绿灯亮起，即可完成预混。", "4 · Premixing", "Wait for the premixer's green light to complete premixing."),
-    INJECTION("5 · 注射", "连接镜头 · 注射 · 镜头画面 · 观察倒计时", "5 · Injection", "Connect camera · Inject · Live view · Observation countdown"),
-    MAGNETIC("6 · 打开磁场", "磁感线状态示意", "6 · Enable Magnetic Field", "Magnetic field-line status"),
-    BLUELIGHT("7 · 打开蓝光", "蓝光照射状态示意", "7 · Enable Blue Light", "Blue-light exposure status"),
-    SHUTDOWN("8 · 关闭磁场与蓝光", "一键关闭 · 收尾确认", "8 · Disable Magnetic Field and Blue Light", "One-tap shutdown · Final check"),
 }
 
 @Composable
@@ -185,10 +180,6 @@ fun WizardScreen(consumeStatusInsets: Boolean = true) {
                 )
                 DoctorStep.OVERVIEW -> Step1OverviewScreen(payload = scanPayload)
                 DoctorStep.TIMING -> Step3TimingScreen()
-                DoctorStep.INJECTION,
-                DoctorStep.MAGNETIC,
-                DoctorStep.BLUELIGHT,
-                DoctorStep.SHUTDOWN -> HardwareChainScreen(steps[currentIndex])
             }
         }
     }
